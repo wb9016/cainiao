@@ -1,4 +1,4 @@
-package laohan.test;
+package laohan.test.exception;
 
 /**
  * @author wb
