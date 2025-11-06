@@ -9,6 +9,7 @@ public class String01 {
         String a1="wb";
         String a2=new String("wb");
         String a3 = new String("wb");
+        a1.compareTo(a3);
 
 
         System.out.println(a1.equals(a2));
