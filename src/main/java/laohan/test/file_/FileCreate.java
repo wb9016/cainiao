@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Properties;
 
 /**
  * @author wb
@@ -249,11 +250,229 @@ public class FileCreate {
             }
         }
 
-
     }
 
     @Test
     public void OutTime(){
         System.out.println(LocalDateTime.now());
+    }
+
+
+    @Test
+    public void BufferedReader01(){
+        String filePath="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\test3.txt";
+
+        BufferedReader bufferedReader=null;
+
+        try {
+            bufferedReader=new BufferedReader(new FileReader(filePath));
+            String line;
+            while ((line = bufferedReader.readLine())!=null){
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Test
+    public void BufferedWriter01(){
+        String filePath="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\test3.txt";
+
+        BufferedWriter bw=null;
+        BufferedReader br=null;
+        String writeStr="wb nb";
+        String line;
+        try {
+            br=new BufferedReader(new FileReader(filePath));
+            while ((line=br.readLine())!=null){
+                System.out.println(line);
+            }
+            System.out.println("修改文字内容");
+            bw=new BufferedWriter(new FileWriter(filePath,true));
+            bw.write(writeStr);
+            bw.newLine();
+            bw.write("wb is a good man");
+            System.out.println("写入成功");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                bw.close();
+                br.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Test
+    public void copyFile02(){
+        String infile="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\test3.txt";
+        String outfile="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\test4.txt";
+        BufferedReader br=null;
+        BufferedWriter bw=null;
+        try {
+            br=new BufferedReader(new FileReader(infile));
+            bw=new BufferedWriter(new FileWriter(outfile));
+            String line;
+            while ((line=br.readLine())!=null){
+                bw.write(line);
+                bw.newLine();
+            }
+            System.out.println("文件复制成功");
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                br.close();
+                bw.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Test
+    public void copyFile03(){
+//        String infile="D:\\壁纸\\1.png";
+        String infile="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\test3.txt";
+//        String outfile="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\1.png";
+        String outfile="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\test5.txt";
+        BufferedInputStream bi=null;
+        BufferedOutputStream bo=null;
+        try {
+            bi = new BufferedInputStream(new FileInputStream(infile));
+            bo=new BufferedOutputStream(new FileOutputStream(outfile));
+            byte[] buf=new byte[1024];
+            int readLen=0;
+            while((readLen=bi.read(buf))!=-1){
+                System.out.print(new String(buf,0,readLen));
+                bo.write(buf,0,readLen);
+            }
+
+            System.out.println("文件复制成功");
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                    if (bi != null) {
+                        bi.close();
+                    }
+                    if (bo!=null){
+                        bo.close();
+                    }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Test
+    public void ObjectOutStream01() throws Exception{
+        String filePath="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\data.dat";
+
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath));
+
+        //序列化数据
+        oos.writeInt(100);
+        oos.writeChar('d');
+        oos.writeUTF("王博啦啦啦啦l");
+        oos.writeObject(new Person("王博",18));
+
+        oos.close();
+        System.out.println("数据保存完成");
+
+
+    }
+
+    @Test
+    public void ObjectInputStream01() throws Exception{
+        String filePath="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\data.dat";
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath));
+
+
+        System.out.println(ois.readInt());
+        System.out.println(ois.readChar());
+        System.out.println(ois.readUTF());
+        Object person = ois.readObject();
+        System.out.println(person.getClass());
+        System.out.println(person.toString());
+        ois.close();
+    }
+
+    @Test
+    public void InputAndOutPut(){
+//        System.in
+    }
+
+    @Test
+    public void InputStreamReader01() throws Exception{
+        String filePath="E:\\daima\\IDEA\\Java\\cainiao\\src\\main\\java\\laohan\\test\\file_\\test3.txt";
+        InputStreamReader isr=null;
+        isr=new InputStreamReader(new FileInputStream(filePath),"gbk");
+
+        BufferedReader br = new BufferedReader(isr);
+        String buf;
+        while ((buf=br.readLine()) !=null){
+            System.out.println(buf);
+        }
+        br.close();
+
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(filePath), "gbk");
+        new PrintWriter(new FileWriter(filePath)).print(" ");
+    }
+
+    @Test
+    public void Properties01() throws Exception{
+        Properties properties = new Properties();
+        properties.load(new FileReader("src\\main\\resources\\test01.properties"));
+        properties.list(System.out);
+        System.out.println(properties.getProperty("user" ));
+
+    }
+
+
+}
+
+class Person implements Serializable{
+    private String name;
+    private int age;
+
+    private static final long serialVersionUID = 1L;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
